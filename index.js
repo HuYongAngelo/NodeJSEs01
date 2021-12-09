@@ -47,7 +47,27 @@ apiServer.get("/student", (request, response)=>{
             console.log("error: "+err);
         } else {
             var students = JSON.parse(data);
-            console.log(students[(request.query.id)-1].surname);
+            console.log(students[(request.query.id)-1]);
+            response.send(students.find(x => x.id === request.query.id));
+        }
+    });
+});
+
+apiServer.get("/newStudent", (request, response)=>{
+    console.log("new student: ", request.query.surname, request.query.name, request.query.id);
+    
+    // Scrittura file
+    fs.readFile("studenti.json", (err, data) => {
+        if (err) {
+            console.log("error: "+err);
+        } else {
+            var students = JSON.parse(data);
+            students.push({"surname":request.query.surname,"name":request.query.name,"id":request.query.id});
+            fs.writeFile("studenti.json", JSON.stringify(students), (err) => {
+                if (err) {
+                    console.log("error: "+err);
+                }
+            });
         }
     });
 });
