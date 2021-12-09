@@ -1,10 +1,11 @@
 var express = require("express");
-var apiServer = express(); 
+var apiServer = express();
+var fs = require("fs");
 
-console.log("Funziona");
-var a = 5;
-var b = "3";
-console.log(a+b);
+// console.log("Funziona");
+// var a = 5;
+// var b = "3";
+// console.log(a+b);
 
 var port=3000;
 var host="localhost";
@@ -28,9 +29,25 @@ apiServer.get("/mioNome", (request, response)=>{
     response.send('Ciao, il tuo nome è: ' + request.query.nome);
 });
 
+// https://localhost:3000/student?a=1&b=2
 apiServer.get("/somma", (request, response)=>{
-    console.log("request somma", request.query);
+    console.log("somma request", request.query);
     var a=parseInt(request.query.a);
     var b=parseInt(request.query.b);
     response.send('Risultato: ' + (a+b));
+});
+
+// https://localhost:3000/student?id=1
+apiServer.get("/student", (request, response)=>{
+    console.log("student id: ", request.query.id);
+
+    // Lettura file
+    fs.readFile("studenti.json", (err, data) => {
+        if (err) {
+            console.log("error: "+err);
+        } else {
+            var students = JSON.parse(data);
+            console.log(students[(request.query.id)-1].surname);
+        }
+    });
 });
